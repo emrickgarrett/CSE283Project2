@@ -296,33 +296,31 @@ class BattleShipServerThread extends Thread{
 			if(ship.locations.contains(x*row+y)){
 				//Ship was hit
 				ship.hits.add(x*row+y);
-				System.out.println("HitHITIHTITIHTI" + ship.hits.size());
 				if(ship.hits.size() == ship.locations.size()){
 					ship.sank = true;
 					
 					if(SHIP.BATTLESHIP.sank && SHIP.CRUISER.sank && SHIP.DESTROYER.sank && SHIP.AIRCRAFT_CARRIER.sank){
-						sendResponse(MoveStatus.HIT.id, GameStatus.CLIENT_WON.id);
-						numGuesses++;
+						sendResponse(MoveStatus.SINK.id, GameStatus.CLIENT_WON.id);
 						inProgress = false;
 					}else{
-						numGuesses++;
 						
 						if(numGuesses >= MAX_GUESSES){
-							sendResponse(MoveStatus.HIT.id, GameStatus.CLIENT_LOST.id);
+							sendResponse(MoveStatus.SINK.id, GameStatus.CLIENT_LOST.id);
 							inProgress = false;
 						}else{
-							sendResponse(MoveStatus.HIT.id, GameStatus.CONTINUE.id);
+							sendResponse(MoveStatus.SINK.id, GameStatus.CONTINUE.id);
 						}
 					}
 				}else{
 					sendResponse(MoveStatus.HIT.id, GameStatus.CONTINUE.id);
-					numGuesses++;
 				}
 			}else{
 				numGuesses++;
 				if(numGuesses == MAX_GUESSES){
 					sendResponse(MoveStatus.MISS.id, GameStatus.CLIENT_LOST.id);
 					inProgress = false;
+				}else{
+					sendResponse(MoveStatus.MISS.id, GameStatus.CLIENT_LOST.id);
 				}
 			}
 		}
